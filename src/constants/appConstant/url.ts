@@ -11,3 +11,8 @@ export const urls = {
   TWITTER: 'https://twitter.com',
   LINKEDIN: 'https://www.linkedin.com/in/',
 };
+
+export const apiEndpoints = {
+  GET_CONTRIBUTIONS: '/contributions',
+  GET_USERS_DATA:'/users/self'
+};

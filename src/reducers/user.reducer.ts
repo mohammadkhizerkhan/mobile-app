@@ -1,10 +1,10 @@
-export const intialState = {
+export const userStore = {
   data: {},
   loading: false,
   error: '',
 };
 
-const user = (state = intialState, action) => {
+const user = (state = userStore, action: any) => {
   switch (action.type) {
     case 'FETCH_USER':
       return { ...state, loading: false, data: action.user };

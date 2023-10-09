@@ -28,7 +28,7 @@ const baseUrl = AuthApis.GITHUB_AUTH_API;
 const AuthScreen = () => {
   // TODO: will revamp github signIn feature
   const dispatch = useDispatch();
-  const { isProdEnvironment } = useSelector((store) => store.localFeatureFlag);
+  const { isProdEnvironment } = useSelector((store) => store.reduxGlobalState);
   const { setLoggedInUserData } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
@@ -54,6 +54,7 @@ const AuthScreen = () => {
     Linking.getInitialURL();
     const handleDeepLink = async (event) => {
       const token = event.url.split('token=')[1];
+      dispatch({ type: 'STORE_TOKEN', payload: token });
       token && updateUserData(token); // store token in redux
     };
     Linking.addEventListener('url', handleDeepLink);
@@ -90,7 +91,7 @@ const AuthScreen = () => {
     try {
       setLoading(true);
       const res = await getUserData(token);
-      await storeData('userData', JSON.stringify(res));
+      dispatch({type:"GET_USER",payload:{token:token,tokenRequired:true}})
       setLoggedInUserData({
         id: res?.id,
         name: res?.name,
@@ -115,6 +116,7 @@ const AuthScreen = () => {
     try {
       const userInfo = await fetch(url);
       const userInfoJson = await userInfo.json();
+      dispatch({ type: 'STORE_TOKEN', payload: userInfoJson.data.token });
       if (userInfoJson.data.token) {
         updateUserData(userInfoJson.data.token);
       } else {

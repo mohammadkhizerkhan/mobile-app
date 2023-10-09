@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 const tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
-  const { isProdEnvironment } = useSelector((store) => store.localFeatureFlag);
+  const { isProdEnvironment } = useSelector((store) => store.reduxGlobalState);
 
   return (
     <NavigationContainer independent>

@@ -7,7 +7,7 @@ export const getApi = async ({
 }: {
   endPointName: string;
   config?: AxiosRequestConfig;
-}) => {
+}):Promise<any> => {
   try {
     const response = await axiosInstance.get(endPointName, config);
     return response;

@@ -27,7 +27,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
-  const { isProdEnvironment } = useSelector((store) => store.localFeatureFlag);
+  const { isProdEnvironment } = useSelector((store) => store.reduxGlobalState);
   const [response, setResponse] = useState<ImagePickerResponse>({});
   const [modalVisible, setModalVisible] = useState(false);
   const { loggedInUserData, setLoggedInUserData } = useContext(AuthContext);

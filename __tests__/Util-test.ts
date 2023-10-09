@@ -142,7 +142,7 @@ describe('fetchUserRequest', () => {
   const generator = fetchUserRequest(action);
 
   test('should call fetchUserData', () => {
-    expect(generator.next().value).toEqual(call(fetchUserData, action.payload));
+    expect(generator.next().value).toEqual(call(getUserData, action.payload));
   });
 
   test('should dispatch FETCH_USER action', () => {

@@ -6,14 +6,17 @@ export type loggedInUserType = {
 };
 
 export interface User {
+  id:string;
   name: string;
   profileUrl: string;
   userName: string;
+  status:string;
   designation: string;
   company: string;
   linkedInUrl: string;
   twitterUrl: string;
   githubUrl: string;
+  token:string;
 }
 
 export interface ErrorData {

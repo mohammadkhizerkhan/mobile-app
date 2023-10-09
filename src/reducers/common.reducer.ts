@@ -1,9 +1,13 @@
 // TODO: by default read from env file
 export const featureFlagState = {
   isProdEnvironment: true,
+  userToken: '',
 };
 
-const localFeatureFlag = (state = featureFlagState, action: any) => {
+const reduxGlobalState = (
+  state = featureFlagState,
+  action: any,
+): typeof featureFlagState => {
   switch (action.type) {
     case 'PROD':
       return {
@@ -15,9 +19,14 @@ const localFeatureFlag = (state = featureFlagState, action: any) => {
         ...state,
         isProdEnvironment: false,
       };
+    case 'STORE_TOKEN':
+      return {
+        ...state,
+        userToken: action.payload,
+      };
     default:
       return state;
   }
 };
 
-export default localFeatureFlag;
+export default reduxGlobalState;

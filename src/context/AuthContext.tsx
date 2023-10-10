@@ -3,22 +3,22 @@ import { getData } from '../utils/dataStore';
 import { ErrorData, loggedInUserType } from './type';
 
 type authContextProviderType = {
-  loggedInUserData: loggedInUserType | null;
+  // loggedInUserData: loggedInUserType | null;
   isLoading: boolean;
   setIsLoading: () => void;
-  setLoggedInUserData: (userData: loggedInUserType | null) => void;
+  // setLoggedInUserData: (userData: loggedInUserType | null) => void;
   errorData: ErrorData;
   setErrorData: (errorData: ErrorData) => void;
 };
 export const AuthContext = React.createContext<authContextProviderType>({
   isLoading: false,
-  loggedInUserData: null,
+  // loggedInUserData: null,
   setIsLoading: () => {
     return;
   },
-  setLoggedInUserData: () => {
-    return;
-  },
+  // setLoggedInUserData: () => {
+  //   return;
+  // },
   errorData: {
     isError: false,
     errorMessage: '',
@@ -34,28 +34,22 @@ type authProviderProps = {
 
 export const AuthProvider: FC<authProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [loggedInUserData, setLoggedInUserData] =
-    useState<loggedInUserType | null>(null);
+  // const [loggedInUserData, setLoggedInUserData] =
+  //   useState<loggedInUserType | null>(null);
   const [errorData, setErrorData] = useState<ErrorData>({
     isError: false,
     errorMessage: '',
   });
-  useEffect(() => {
-    getData('userData').then((res) => {
-      console.log('res', res);
-      setLoggedInUserData(res);
-    });
-  }, []);
 
   const context = {
     isLoading,
-    loggedInUserData,
+    // loggedInUserData,
     setIsLoading: () => {
       setIsLoading((prevIsLoading) => !prevIsLoading);
     },
-    setLoggedInUserData: (userData: loggedInUserType | null) => {
-      setLoggedInUserData(userData);
-    },
+    // setLoggedInUserData: (userData: loggedInUserType | null) => {
+    //   setLoggedInUserData(userData);
+    // },
     setErrorData: (data: ErrorData) => {
       setErrorData((prev) => ({
         ...prev,

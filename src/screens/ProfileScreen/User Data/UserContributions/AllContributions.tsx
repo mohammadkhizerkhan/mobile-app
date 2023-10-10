@@ -10,16 +10,18 @@ import {
 import { fetchContribution } from '../../../AuthScreen/Util';
 import { useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from '../../../../context/AuthContext';
+import { User } from '../../../../context/type';
+import { useSelector } from 'react-redux';
 
 const AllContributionsDropdown = () => {
   const [clicked, setClicked] = useState(false);
   const [allContributionsData, setAllContributionData] = useState([]);
-  const { loggedInUserData } = useContext(AuthContext);
+  const { data: userData }: { data: User } = useSelector((store) => store.user);
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        const userName = loggedInUserData?.username;
+        const userName = userData.userName;
         const contributionResponse = await fetchContribution(userName);
         setAllContributionData(contributionResponse.all);
       })();

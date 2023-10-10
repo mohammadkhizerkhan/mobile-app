@@ -1,19 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from './context/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import TabNavigation from './navigations/TabNavigation/TabNavigation';
 import AuthScreen from './screens/AuthScreen/AuthScreen';
 import ErrorPopup from './components/ErrorPopUp/ErrorPopUp';
+import { useDispatch, useSelector } from 'react-redux';
+import { User } from './context/type';
+import { getData } from './utils';
 
 const Index = () => {
-  const { isLoading, loggedInUserData, errorData, setErrorData } = useAuth();
+  const { isLoading, errorData, setErrorData } = useAuth();
+  const { data }: { data: User } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  if (!loggedInUserData) {
+  if (!data.id) {
     return <AuthScreen />;
   }
+
+  useEffect(() => {
+    getData('userData').then((res) => {
+      dispatch({ type: 'UPDATE_USER_DATA', payload: res });
+    });
+  }, []);
 
   return (
     <>

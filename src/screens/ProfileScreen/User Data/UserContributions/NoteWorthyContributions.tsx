@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,17 +9,18 @@ import {
 } from 'react-native';
 import { fetchContribution } from '../../../AuthScreen/Util';
 import { useFocusEffect } from '@react-navigation/native';
-import { AuthContext } from '../../../../context/AuthContext';
+import { User } from '../../../../context/type';
+import { useSelector } from 'react-redux';
 
 const NoteworthyContributionsDropdown = () => {
   const [clicked, setClicked] = useState(false);
   const [userContributionData, setUserContributionData] = useState([]);
-  const { loggedInUserData } = useContext(AuthContext);
+  const { data: userData }: { data: User } = useSelector((store) => store.user);
 
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        const userName = loggedInUserData?.username;
+        const userName = userData?.userName;
         const contributionResponse = await fetchContribution(userName);
         setUserContributionData(contributionResponse.noteworthy);
       })();

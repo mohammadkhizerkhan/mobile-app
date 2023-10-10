@@ -6,7 +6,7 @@ export function* fetchUserRequest(action:any) {
   try {
     const { token, tokenRequired } = action.payload;
     const user: User = yield call(getUserData, token ,tokenRequired);
-    yield put({ type: 'FETCH_USER', user: user });
+    yield put({ type: 'FETCH_USER', payload: user });
   } catch (error: any) {
     yield put({ type: 'FETCH_USER_ERROR', message: error.message });
   }

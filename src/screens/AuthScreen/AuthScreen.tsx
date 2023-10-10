@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DeviceInfo from 'react-native-device-info';
 import {
   Text,
@@ -14,9 +14,6 @@ import Strings from '../../i18n/en';
 import { AuthViewStyle } from './styles';
 import { AuthScreenButton } from './Button';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
-import { AuthContext } from '../../context/AuthContext';
-import { getUserData } from './Util';
-import { storeData } from '../../utils/dataStore';
 import AuthApis from '../../constants/apiConstant/AuthApi';
 import { CameraScreen } from 'react-native-camera-kit';
 import CustomModal from '../../components/Modal/CustomModal';
@@ -29,7 +26,6 @@ const AuthScreen = () => {
   // TODO: will revamp github signIn feature
   const dispatch = useDispatch();
   const { isProdEnvironment } = useSelector((store) => store.reduxGlobalState);
-  const { setLoggedInUserData } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [scannedUserId, setScannedUserID] = useState('');
@@ -90,22 +86,13 @@ const AuthScreen = () => {
   const updateUserData = async (token: string) => {
     try {
       setLoading(true);
-      const res = await getUserData(token);
-      dispatch({type:"GET_USER",payload:{token:token,tokenRequired:true}})
-      setLoggedInUserData({
-        id: res?.id,
-        name: res?.name,
-        profileUrl: res?.profileUrl,
-        status: res?.status,
-        twitterId: res?.twitter_id,
-        linkedinId: res?.linkedin_id,
-        githubId: res?.github_id,
-        discordUserName: res?.username,
-        token: token,
+      dispatch({
+        type: 'GET_USER',
+        payload: { token: token, tokenRequired: true },
       });
       setLoading(false);
     } catch (err) {
-      setLoggedInUserData(null);
+      // setLoggedInUserData(null);
     }
   };
 

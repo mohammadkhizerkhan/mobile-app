@@ -1,22 +1,13 @@
 // TODO: we wil remove this once we start using userData and contributionData
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useCallback, useContext } from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  FlatList,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 import { ScreenViewContainer } from '../../styles/GlobalStyle';
 import { profileScreenStyles } from './styles';
 import withHeader from '../../helpers/withHeader';
 import ButtonWidget from '../../components/ButtonWidget';
 import Avatar from '../../components/Avatar';
 import UploadImageModalView from '../../components/GalleryModal';
-import { AuthContext } from '../../context/AuthContext';
 import { ImagePickerResponse } from 'react-native-image-picker';
 import Strings from '../../i18n/en';
 import AllContributionsDropdown from './User Data/UserContributions/AllContributions';
@@ -24,13 +15,14 @@ import NoteworthyContributionsDropdown from './User Data/UserContributions/NoteW
 import ActiveTaskDropDown from './User Data/UserContributions/ActiveTask';
 import UserData from './User Data/UserData';
 import { useSelector, useDispatch } from 'react-redux';
+import { User } from '../../context/type';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
+  const { data: userData }: { data: User } = useSelector((store) => store.user);
   const { isProdEnvironment } = useSelector((store) => store.reduxGlobalState);
   const [response, setResponse] = useState<ImagePickerResponse>({});
   const [modalVisible, setModalVisible] = useState(false);
-  const { loggedInUserData, setLoggedInUserData } = useContext(AuthContext);
 
   const openModal = useCallback(() => {
     setModalVisible(true);
@@ -70,10 +62,10 @@ const ProfileScreen = () => {
             <Avatar key={uri} uri={uri || ''} size={100} />
           ))}
         {showDefaultAvatar() && (
-          <Avatar uri={loggedInUserData?.profileUrl || ''} size={100} />
+          <Avatar uri={userData?.profileUrl || ''} size={100} />
         )}
         <Text style={profileScreenStyles.titleText}>
-          <UserData userData={loggedInUserData} />
+          <UserData userData={userData} />
         </Text>
         <ButtonWidget title={'Update'} onPress={openModal} />
         <ButtonWidget
@@ -91,7 +83,7 @@ const ProfileScreen = () => {
           <Pressable
             style={profileScreenStyles.logoutButton}
             onPress={() => {
-              setLoggedInUserData(null);
+              // setLoggedInUserData(null);
             }}
           >
             <Text style={profileScreenStyles.logoutText} onPress={handleLogout}>

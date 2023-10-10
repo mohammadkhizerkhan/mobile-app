@@ -1,31 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
-import { AuthContext } from '../../context/AuthContext';
 import withHeader from '../../helpers/withHeader';
 import { storeData } from '../../utils/dataStore';
 import Strings from '../../i18n/en';
 import { updateStatus } from '../AuthScreen/Util';
 import { HomeViewStyle } from './styles';
 import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
+import { User } from '../../context/type';
 
 const HomeScreen = () => {
   const [loader, setLoader] = useState<boolean>(false);
-
-  const { loggedInUserData, setLoggedInUserData } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const { data }: { data: User } = useSelector((store) => store.user);
 
   const changeStatus = (status: string) => {
     setLoader(true);
-    loggedInUserData &&
+    data.id &&
       updateStatus(status)
         .then(() => {
-          setLoggedInUserData({
-            ...loggedInUserData,
-            status: status,
-          });
+          dispatch({ type: 'UPDATE_USER_STATUS', payload: status });
           storeData(
             'userData',
             JSON.stringify({
-              ...loggedInUserData,
+              ...data,
               status: status,
             }),
           );
@@ -43,7 +41,7 @@ const HomeScreen = () => {
   };
 
   const renderScreen = () => {
-    if (loggedInUserData?.status === Strings.OUT_OF_OFFICE) {
+    if (data?.status === Strings.OUT_OF_OFFICE) {
       return (
         <>
           <Text style={HomeViewStyle.heading}>{Strings.OOOStatus_Text}</Text>
@@ -57,7 +55,7 @@ const HomeScreen = () => {
     return (
       <View>
         <Text style={HomeViewStyle.heading}>
-          {loggedInUserData?.status === Strings.ACTIVE
+          {data?.status === Strings.ACTIVE
             ? Strings.Active_Text
             : Strings.Idle_Text}
         </Text>

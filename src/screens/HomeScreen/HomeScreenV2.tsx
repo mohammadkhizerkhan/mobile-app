@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Strings from '../../i18n/en';
 import OOOForm from '../../components/OOO/OOOForm';
@@ -10,9 +10,11 @@ import {
   submitOOOForm,
 } from '../AuthScreen/Util';
 import LoadingScreen from '../../components/LoadingScreen';
-import { AuthContext } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
+import { User } from '../../context/type';
 
 const HomeScreenV2 = (): JSX.Element => {
+  const { data: userData }: { data: User } = useSelector((store) => store.user);
   const currentDate = new Date();
   const tomorrowDate = new Date(currentDate);
   tomorrowDate.setDate(currentDate.getDate() + 1);
@@ -22,7 +24,6 @@ const HomeScreenV2 = (): JSX.Element => {
   const [description, setDescription] = useState<string>('');
   const [status, setStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { loggedInUserData } = useContext(AuthContext);
 
   useEffect(() => {
     fetchData();
@@ -30,13 +31,13 @@ const HomeScreenV2 = (): JSX.Element => {
   }, [isLoading]);
 
   const fetchData = async () => {
-    const userStatus = await getUsersStatus(loggedInUserData?.token);
+    const userStatus = await getUsersStatus(userData.token);
     setStatus(userStatus);
   };
 
   const handleButtonPress = async () => {
     if (status === 'OOO') {
-      await cancelOoo(loggedInUserData?.token);
+      await cancelOoo(userData.token);
     } else {
       setIsFormVisible((prev) => !prev);
     }
@@ -53,7 +54,7 @@ const HomeScreenV2 = (): JSX.Element => {
         updateAt: formatTimeToUnix(Date.now),
       },
     };
-    await submitOOOForm(data, loggedInUserData?.token);
+    await submitOOOForm(data, userData?.token);
     setIsLoading(false); // Clear loading state after API call
     setIsFormVisible(false); // Hide the form after a successful submission
   };

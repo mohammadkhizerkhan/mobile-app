@@ -14,5 +14,7 @@ export const urls = {
 
 export const apiEndpoints = {
   GET_CONTRIBUTIONS: '/contributions',
-  GET_USERS_DATA:'/users/self'
+  GET_USERS_DATA: '/users/self',
+  GET_USERS_STATUS: '/users/status/self',
+  UPDATE_USERS_STATUS:'/users/status/self?userStatusFlag=true'
 };

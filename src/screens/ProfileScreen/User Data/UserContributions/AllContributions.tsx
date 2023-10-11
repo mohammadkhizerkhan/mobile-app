@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { fetchContribution } from '../../../AuthScreen/Util';
 import { useFocusEffect } from '@react-navigation/native';
-import { AuthContext } from '../../../../context/AuthContext';
 import { User } from '../../../../context/type';
 import { useSelector } from 'react-redux';
 

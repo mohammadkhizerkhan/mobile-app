@@ -1,38 +1,60 @@
 import axios from 'axios';
-import { urls } from '../../constants/appConstant/url';
+import { apiEndpoints, urls } from '../../constants/appConstant/url';
 import { HomeApi } from '../../constants/apiConstant/HomeApi';
 import { PermissionsAndroid } from 'react-native';
+import { getApi, patchApi } from '../../utils/apiRequests';
+import { store } from '../../../App';
+import { CurrentStatusPayload, User } from '../../context/type';
+import { storeData } from '../../utils';
 
-export const getUserData = async (token: string) => {
+const token = store.getState().reduxGlobalState.userToken;
+const mainConfig = {
+  headers: {
+    'Content-Type': 'application/json',
+    Cookie: `rds-session=${token}`,
+  },
+};
+
+export const getUserData = async (
+  token: string,
+  tokenRequired: boolean = false,
+): Promise<User> => {
   try {
-    const res = await axios.get(urls.GET_USERS_DATA, {
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: `rds-session=${token}`,
-      },
+    const config = tokenRequired ? mainConfig : {};
+    const res = await getApi({
+      endPointName: apiEndpoints.GET_USERS_DATA,
+      config: config,
     });
-    return {
+    const userData: User = {
       id: res.data.id,
       name: res.data.github_display_name,
       profileUrl: res.data?.picture?.url,
       status: res.data?.status,
-      twitter_id: res.data?.twitter_id,
-      linkedin_id: res.data?.linkedin_id,
-      github_id: res.data?.github_id,
-      username: res?.data?.username,
+      twitterUrl: urls.GITHUB + res.data?.twitter_id,
+      linkedInUrl: urls.LINKEDIN + res.data?.linkedin_id,
+      githubUrl: urls.TWITTER + res.data?.github_id,
+      userName: res?.data?.username,
       token: token,
+      designation: res?.data.designation,
+      company: res?.data.company,
     };
+    await storeData('userData', JSON.stringify(userData));
+    return userData;
   } catch (e) {
     console.log('err', e);
+    throw e;
   }
 };
 
-export const fetchContribution = async (userName: string): Promise<any> => {
+export const fetchContribution = async (
+  userName: string,
+  tokenRequired: boolean = false,
+): Promise<any> => {
   try {
-    const response = await axios.get(urls.GET_CONTRIBUTIONS + userName, {
-      headers: {
-        cookie: '',
-      },
+    const config = tokenRequired ? mainConfig : {};
+    const response = await getApi({
+      endPointName: apiEndpoints.GET_CONTRIBUTIONS + `/${userName}`,
+      config: config,
     });
     return response.data;
   } catch (error) {
@@ -40,17 +62,21 @@ export const fetchContribution = async (userName: string): Promise<any> => {
   }
 };
 
-export const updateStatus = async (status: string) => {
-  const res = await axios.patch(
-    urls.GET_USERS_DATA,
-    { status },
-    {
-      headers: {
-        cookie: '',
-      },
-    },
-  );
-  return res.config.data.status;
+export const updateStatus = async (
+  status: string,
+  tokenRequired: boolean = false,
+) => {
+  try {
+    const config = tokenRequired ? mainConfig : {};
+    const response = await patchApi({
+      endPointName: apiEndpoints.GET_USERS_DATA,
+      payload: { status },
+      config: config,
+    });
+    return response.config.data.status;
+  } catch (error) {
+    return null;
+  }
 };
 
 export const updateMarkYourSelfAs_ = async (markStatus: string) => {
@@ -67,16 +93,15 @@ export const updateMarkYourSelfAs_ = async (markStatus: string) => {
   return res.data.status;
 };
 
-export const getUsersStatus = async (token) => {
+export const getUsersStatus = async (tokenRequired: boolean = false) => {
   try {
-    const res = await axios.get(HomeApi.GET_USER_STATUS, {
-      headers: {
-        'Content-type': 'application/json',
-        cookie: `rds-session=${token}`,
-      },
+    const config = tokenRequired ? mainConfig : {};
+    const response = await getApi({
+      endPointName: apiEndpoints.GET_USERS_STATUS,
+      config,
     });
-    if (res.data.data.currentStatus) {
-      return res.data.data.currentStatus.state;
+    if (response.data.data.currentStatus) {
+      return response.data.data.currentStatus.state;
     } else {
       return 'Something went wrong';
     }
@@ -85,38 +110,37 @@ export const getUsersStatus = async (token) => {
   }
 };
 
-export const submitOOOForm = async (data, token) => {
-  console.log('data', data);
-  const options = {
-    headers: {
-      'Content-type': 'application/json',
-      cookie: `rds-session=${token}`,
-    },
-  };
-  const body = data;
+export const submitOOOForm = async (
+  data: CurrentStatusPayload,
+  tokenRequired: boolean = false,
+) => {
+  const config = tokenRequired ? mainConfig : {};
   try {
-    const res = await axios.patch(HomeApi.UPDATE_STATUS, body, options);
-    if (res.status === 200) {
-      return res;
+    const response = await patchApi({
+      endPointName: apiEndpoints.UPDATE_USERS_STATUS,
+      payload: data,
+      config: config,
+    });
+    if (response.status === 200) {
+      return response;
     }
   } catch (err) {
     console.log('error', err);
   }
 };
 
-export const cancelOoo = async (token) => {
-  const options = {
-    headers: {
-      'Content-type': 'application/json',
-      cookie: `rds-session=${token}`,
-    },
-  };
-  const body = { cancelOoo: true };
+export const cancelOoo = async (tokenRequired: boolean = false) => {
+  const config = tokenRequired ? mainConfig : {};
+  const payload = { cancelOoo: true };
   try {
-    const res = await axios.patch(HomeApi.UPDATE_STATUS, body, options);
-    if (res.status === 200) {
-      console.log('response in cancelling', res);
-      return res;
+    const response = await patchApi({
+      endPointName: apiEndpoints.UPDATE_USERS_STATUS,
+      config,
+      payload: payload,
+    });
+    if (response.status === 200) {
+      console.log('response in cancelling', response);
+      return response;
     } else {
       throw new Error('Api is failing');
     }

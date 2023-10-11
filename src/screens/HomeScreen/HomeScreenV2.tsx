@@ -31,7 +31,7 @@ const HomeScreenV2 = (): JSX.Element => {
   }, [isLoading]);
 
   const fetchData = async () => {
-    const userStatus = await getUsersStatus(userData.token);
+    const userStatus = await getUsersStatus(true);
     setStatus(userStatus);
   };
 
@@ -54,7 +54,7 @@ const HomeScreenV2 = (): JSX.Element => {
         updateAt: formatTimeToUnix(Date.now),
       },
     };
-    await submitOOOForm(data, userData?.token);
+    await submitOOOForm(data, true);
     setIsLoading(false); // Clear loading state after API call
     setIsFormVisible(false); // Hide the form after a successful submission
   };

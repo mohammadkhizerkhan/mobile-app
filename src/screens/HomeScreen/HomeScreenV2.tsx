@@ -10,11 +10,12 @@ import {
   submitOOOForm,
 } from '../AuthScreen/Util';
 import LoadingScreen from '../../components/LoadingScreen';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { User } from '../../context/type';
 
 const HomeScreenV2 = (): JSX.Element => {
   const { data: userData }: { data: User } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
   const currentDate = new Date();
   const tomorrowDate = new Date(currentDate);
   tomorrowDate.setDate(currentDate.getDate() + 1);
@@ -32,12 +33,13 @@ const HomeScreenV2 = (): JSX.Element => {
 
   const fetchData = async () => {
     const userStatus = await getUsersStatus(true);
+    dispatch({ type: 'UPDATE_USER_STATUS', payload: status });
     setStatus(userStatus);
   };
 
   const handleButtonPress = async () => {
     if (status === 'OOO') {
-      await cancelOoo(userData.token);
+      await cancelOoo(true);
     } else {
       setIsFormVisible((prev) => !prev);
     }

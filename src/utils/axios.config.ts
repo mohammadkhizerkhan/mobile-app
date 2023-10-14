@@ -10,21 +10,19 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(
-  (config) => {
+  (config: any) => {
     return config;
   },
-  (error) => {
-    console.log('API error', error);
+  (error: any) => {
     return Promise.reject(error);
   },
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log(response.data, 'Response was received');
-    return response.data;
+  (response: any) => {
+    return response;
   },
-  (error) => {
+  (error: any) => {
     // handle the response error
     if (
       error.response.data.message.toLowerCase().includes('unauthorised access')

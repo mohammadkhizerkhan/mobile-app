@@ -12,19 +12,23 @@ const Index = () => {
   const { isLoading, errorData, setErrorData } = useAuth();
   const { data }: { data: User } = useSelector((store) => store.user);
   const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    getData('userData').then((res) => {
+      console.log('storage data----------->', res);
+      dispatch({ type: 'UPDATE_USER_DATA', payload: res });
+      dispatch({ type: 'STORE_TOKEN', payload: res.token });
+    });
+  }, []);
+
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  if (!data.id) {
+  if (!data.token) {
     return <AuthScreen />;
   }
-
-  useEffect(() => {
-    getData('userData').then((res) => {
-      dispatch({ type: 'UPDATE_USER_DATA', payload: res });
-    });
-  }, []);
 
   return (
     <>

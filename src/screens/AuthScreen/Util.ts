@@ -29,7 +29,7 @@ export const getUserData = async (
       id: res.data.id,
       name: res.data.github_display_name,
       profileUrl: res.data?.picture?.url,
-      status: res.data?.status,
+      status: '',
       twitterUrl: urls.GITHUB + res.data?.twitter_id,
       linkedInUrl: urls.LINKEDIN + res.data?.linkedin_id,
       githubUrl: urls.TWITTER + res.data?.github_id,
